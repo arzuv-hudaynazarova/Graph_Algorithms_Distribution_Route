@@ -1,6 +1,6 @@
 # Algorithm_Analyses_and_Desin
 # Graph Dijikstra Algorithms
-# Distribution route for emergencies
+# İhtiyaçlara göre dağıtım rotası
 
 
 Bu uygulamada, bir dağıtım rotası planlaması için tasarlanmış, HTML, CSS ve JavaScript dilleri kullanılarak oluşturulmuştur.
