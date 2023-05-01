@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,11 +19,8 @@
 <body>
   <div id="map"></div>
   <script>
-    /*const center = [27.278360008492342, 27.278360008492342];
-    const radius = 1.5; 
-    const map = L.map('map').setView(center, 14); */
-
-
+    
+   // Lokasyon bilgileri
     const locations = [
       { id: 1, lat: 37.892747, lon: 27.298976, needs: [10, 5, 2, 3] },
       { id: 2, lat: 37.880624, lon: 27.309730, needs: [8, 10, 4, 2] },
@@ -45,8 +41,9 @@
       { id: 17, lat: 37.714141, lon:  27.48118, needs: [5, 5, 1, 4] },
       { id: 18, lat: 37.706453, lon: 27.518912, needs: [6, 4, 2, 3] },
     ];
+  
 
-     
+    // Stok bilgileri 
      const stock = [
      { priority: 1, type: 'Sağlık Malzemesi', stock: 100 },
      { priority: 2, type: 'Temel Gıda', stock: 100 },
@@ -55,11 +52,13 @@
    ];
   
 
-
+   // Merkez koordinatları
    const center = [37.892747, 27.298976];
+   // Haritayı başlatma
    const map = L.map('map').setView(center, 11);
 
-   const circleRadius = 1500; // 1.5 km çapında daireler için yarıçap
+   // 1.5 km çapında daireler için yarıçap
+   const circleRadius = 1500; 
 
   // Lokasyonları haritada göstermek için daireler çiziyoruz
   locations.forEach(location => {
@@ -72,9 +71,9 @@
   });
 
 
-  
+  // Haversine formülü ile koordinatlar arası mesafe hesaplama
    function haversineDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Earth's radius in km
+    const R = 6371; 
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a =
@@ -89,7 +88,7 @@
   
   
 
-    //const map = L.map('map').setView([41.0082, 28.9784], 11);
+  // Haritayı başlatma
 
      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -97,7 +96,7 @@
 
      
 
-     
+     // Koordinatlardan adres bilgisi alma
     async function getAddress(lat, lon) {
       const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
       const response = await fetch(url);
@@ -105,6 +104,8 @@
       return data.display_name;
     }
 
+
+    // Adres bilgilerini alıp, lokasyonları haritaya işaretleme
     (async () => {
       for (const location of locations) {
         const address = await getAddress(location.lat, location.lon);
@@ -124,14 +125,14 @@
       }
     })();
 
-    // Create a distance matrix to store the distances between each location
+    // Mesafe matrisi oluşturma
     const distanceMatrix = locations.map((location1) =>
     locations.map((location2) =>
       haversineDistance(location1.lat, location1.lon, location2.lat, location2.lon)
     )
     );
 
-    // Dijkstra's algorithm for finding the shortest path between nodes in a graph
+    // Dijkstra algoritması ile en kısa yol bulma
     function dijkstra(graph, source) {
     const visited = [];
     const distances = [];
@@ -182,9 +183,11 @@
     const graph = distanceMatrix.map(row => row.map(distance => distance));
     const result = dijkstra(graph, 0);
 
+    // Malzeme dağıtım planı oluşturma
     const distributionPlan = distributeStock(stock, locations, result.distances);
     console.log(distributionPlan);
 
+    
     // En kısa yolu çizmek için polyline oluşturuyoruz
     const shortestPath = [];
     let currentNode = destIndex;
