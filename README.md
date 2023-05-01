@@ -3,23 +3,29 @@
 # İhtiyaçlara göre dağıtım rotası
 
 
-Bu uygulamada, bir dağıtım rotası planlaması için tasarlanmış, HTML, CSS ve JavaScript dilleri kullanılarak oluşturulmuştur.
+Bu örnek kodda, ihtiyaç malzemeleri dağıtımı için bir planlama uygulaması oluşturulmaktadır. Bu uygulama, Leaflet.js kütüphanesi kullanılarak bir harita üzerinde rastgele lokasyonların oluşturulmasını, her bir lokasyon için rastgele ihtiyaçların belirlenmesini ve bu lokasyonların adres bilgileri ve ihtiyaçları ile birlikte harita üzerinde gösterilmesini sağlar.
 
-Uygulamada Leaflet isimli bir JavaScript kütüphanesi kullanılarak bir harita görüntülenmektedir. Harita, OpenStreetMap verileri kullanılarak oluşturulur. Haritanın zoom ve pan özellikleri sayesinde, kullanıcılar haritayı istedikleri şekilde görüntüleyebilirler.
-Dağıtım yapılacak olan yerlerin koordinatları ve ihtiyaç duyulan malzemelerin listesi locations adlı bir JavaScript değişkeni içerisinde saklanmaktadır. stock adlı bir başka JavaScript değişkeni de, depoda bulunan malzemelerin listesini tutar.
+Kodun genel yapısı şu şekildedir:
 
-Ayrıca, getAddress adlı bir fonksiyon kullanarak, bir koordinatın adresini alır. Bu fonksiyon, OpenStreetMap API'sini kullanarak bir GET isteği gönderir ve isteğin cevabında yer alan verileri alarak, koordinatın adresini döndürür.
+HTML dosyasında, Leaflet.js kütüphanesi için gerekli CSS ve JS dosyaları dahil edilir. Ayrıca, bir div öğesi oluşturulur ve bu öğeye bir id özelliği (map) atanır.
 
- haversineDistance adlı bir fonksiyon kullanarak, iki koordinat arasındaki haversine mesafesini hesaplar. Bu fonksiyon, birinci koordinatın enlem ve boylam değerleri ile ikinci koordinatın enlem ve boylam değerleri arasındaki mesafeyi hesaplayarak, mesafeyi kilometre cinsinden döndürür.
+JavaScript dosyasında, bir merkez noktası ve yarıçap belirlenerek rastgele lokasyonlar oluşturmak için bir fonksiyon (generateRandomLocations()) tanımlanır. Bu fonksiyon, belirtilen merkez noktası ve yarıçap kullanılarak, belirli bir sayıda (locationCount) rastgele konumlar oluşturur.
 
-Dijkstra adlı bir fonksiyon kullanarak, Dijkstra algoritmasını kullanarak bir ağırlıklı graf üzerinde en kısa yolu bulur. Bu fonksiyon, bir graf matrisi ve bir başlangıç düğümü alır. Graf matrisindeki her eleman, iki düğüm arasındaki mesafeyi gösterir. Fonksiyon, graf matrisindeki en kısa yolu bulmak için Dijkstra algoritmasını kullanır ve en kısa yolu ve düğümleri tutan bir dizi döndürür.
+Lokasyonlar üzerinde gösterilecek işaretleyici simgesi ve özellikleri belirlemek için bir icon nesnesi oluşturulur.
 
- distributeStock adlı bir fonksiyon kullanarak, depodaki malzemeleri yerlere dağıtmak için en kısa yolu kullanır. Bu fonksiyon, depodaki malzemelerin listesini, dağıtım yapılacak olan yerlerin listesini ve en kısa yolu alır. Fonksiyon, malzemelerin belirtilen öncelik sırasına göre dağıtımını yaparak, dağıtım planını bir dizi şeklinde döndürür.
+Rastgele lokasyonlar, Leaflet.js kütüphanesi kullanılarak bir harita üzerinde işaretleyici olarak gösterilir. Her bir işaretleyiciye, konumun id özelliği içeren bir pop-up penceresi eklenir.
 
-Polyline adlı bir nesne oluşturarak en kısa rotayı çizer. Ayrıca, rota uzunluğu ve tahmini süre bilgilerini hesaplar ve sayfada gösterir.
-Sayfa, farklı fonksiyonlar aracılığıyla malzeme dağıtımını simüle ederek, bir depodan, farklı lokasyonlara malzeme taşıma senaryolarını test edebilir. Sayfa, kullanıcıların malzeme dağıtımına ilişkin verileri girerek, en kısa rotayı ve bu rotada malzemelerin hangi lokasyona hangi sırayla dağıtılacağına ilişkin bir plan oluşturmalarına olanak tanır.
+Her bir konum için bir adres bilgisi almak için bir fonksiyon (getAddress()) tanımlanır. Bu fonksiyon, Nominatim API'sini kullanarak bir koordinatın adres bilgisini alır.
 
-Bu Senaryoda, JavaScript dilinde yazılmış olan bazı algoritmaları ve kütüphaneleri kullanarak bir uygulama geliştirmek için bir örnek sunar. Ayrıca, bu algoritmaların ve kütüphanelerin nasıl kullanılacağını göstererek, bu tarz uygulamaların nasıl tasarlanabileceği konusunda bir fikir verir.
+Rastgele ihtiyaçlar oluşturmak için bir fonksiyon (generateRandomNeeds()) tanımlanır. Bu fonksiyon, her bir lokasyon için, önceden belirlenmiş bir ihtiyaç malzemesi listesinden (stock) rastgele ihtiyaçlar oluşturur.
 
+Her bir lokasyon için, getAddress() fonksiyonu kullanılarak adres bilgisi alınır ve lokasyonun ihtiyaçları ile birlikte harita üzerinde işaretleyici olarak gösterilir.
+
+
+İki koordinat arasındaki mesafeyi hesaplamak için bir fonksiyon (calculateDistance()) tanımlanır. Bu fonksiyon, Haversine formülü kullanılarak iki nokta arasındaki mesafeyi hesaplar.
+
+Yukarıdaki işlemlerin tamamı async/await yapısı kullanılarak gerçekleştirilir. Bu sayede, işlemler sırayla ve arka arkaya gerçekleştirilir ve herhangi bir hata oluştuğunda bu hatalar yakalanabilir.
+
+Sonuç olarak, bu örnek kod, Leaflet.js kütüphanesi kullanarak harita üzerinde rastgele lokasyonların oluşturulmasını, bu lokasyonların adres bilgileri ve ihtiyaçları ile birlikte gösterilmesini ve ihtiyaç malzemeleri dağıtımı için bir planlama uygulaması oluşturulmasını sağlar. Bu uygulama, gerçek hayatta ihtiyaç duyulan malzemelerin daha hızlı ve etkili bir şekilde dağıtılmasına yardımcı olabilir.
 
 
